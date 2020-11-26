@@ -8,8 +8,6 @@ namespace pendu
     {
         static void Main(string[] args)
         {
-            Random random = new Random(DateTime.Now.Millisecond);
-
             // All possible letters
             const string letters = "AEIOUYRSTLNECDFGHJKMPQVWXZ";
             const int maxTryNumber = 20;
@@ -31,9 +29,11 @@ namespace pendu
             List<int> wrongWordIndex = new List<int>();
 
             int indexOfLetterToTry = 0;
-            int currentTry = 0;
+            int currentTry = 1;
             while (currentTry <= maxTryNumber)
             {
+                Console.WriteLine($"Try n°{currentTry}");
+
                 int indexOfClosestWord = -1;
                 int maxNbOfSameLetters = 0;
 
@@ -63,22 +63,12 @@ namespace pendu
                 if (maxNbOfSameLetters != 0)
                 { 
                     Console.WriteLine($"Selected word is {words[indexOfClosestWord]}");
-
                     int index = 0;
-                    do
-                        letterToTry = words[indexOfClosestWord][index++];
-                    while (alreadyTriedLetters.Contains(letterToTry));
-
-                    Console.WriteLine($"Found letter to try {letterToTry}");
+                    letterToTry = chooseLetterToTry(words[indexOfClosestWord], ref index, alreadyTriedLetters);
                 }
-                else
-                {
-                    do
-                        letterToTry = letters[indexOfLetterToTry++];
-                    while (alreadyTriedLetters.Contains(letterToTry));                
+                else letterToTry = chooseLetterToTry(letters, ref indexOfLetterToTry, alreadyTriedLetters);
 
-                    Console.WriteLine($"Random letter is {letterToTry}");
-                }
+                Console.WriteLine($"Chosen letter is {letterToTry}");
 
                 if (letterToTry != (char)0)
                 {
@@ -86,20 +76,28 @@ namespace pendu
                     alreadyTriedLetters.Add(letterToTry);
                     currentTry++;
                 }
-                
-                Console.WriteLine($"It was try n°{currentTry}");
 
                 if (Equals(wordToFind, foundLetters))
                     break;
             }
 
-            if (currentTry > maxTryNumber)
+            if (currentTry >= maxTryNumber)
                 Console.WriteLine($"CPU has lost");
             else
-                Console.WriteLine($"CPU has founded your word in {currentTry} turns !\nIt's {wordToFind}");
+                Console.WriteLine($"CPU has founded your word in {currentTry-1} turns !");
 
-            Console.Write("Founded letters : ");
+            Console.Write("Founded letters are ");
             Console.WriteLine(foundLetters);
+        }
+
+        static char chooseLetterToTry(string word, ref int startIndex, List<char> alreadyTriedLetters)
+        {
+            char letterToTry = (char)0;
+            
+            do letterToTry = word[startIndex++];
+            while (startIndex < word.Length && alreadyTriedLetters.Contains(letterToTry));
+
+            return letterToTry;
         }
 
         static bool IsWordValid(string word, int index, string wordToFind, char[] foundLetters, List<char> alreadyTriedLetters, List<int> wrongWordIndex)
