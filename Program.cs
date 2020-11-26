@@ -28,7 +28,7 @@ namespace pendu
             List<char> alreadyTriedLetters = new List<char>();
             List<int> wrongWordIndex = new List<int>();
 
-            int indexOfLetterToTry = 0;
+            int indexOfLetterToTry = 0; // to iterate over letters
             int currentTry = 1;
             while (currentTry <= maxTryNumber)
             {
